@@ -45,18 +45,27 @@ def get_access_token():
     if missing:
         sys.exit(f"Missing secrets: {', '.join(missing)}. Add them under Settings → Secrets and variables → Actions.")
 
+    # .strip() removes stray spaces, quotes or line breaks picked up when pasting secrets
+    creds = {k: os.environ[k].strip().strip('"').strip("'").strip()
+             for k in ("STRAVA_CLIENT_ID", "STRAVA_CLIENT_SECRET", "STRAVA_REFRESH_TOKEN")}
+
     res = requests.post("https://www.strava.com/oauth/token", data={
-        "client_id": os.environ["STRAVA_CLIENT_ID"],
-        "client_secret": os.environ["STRAVA_CLIENT_SECRET"],
+        "client_id": creds["STRAVA_CLIENT_ID"],
+        "client_secret": creds["STRAVA_CLIENT_SECRET"],
         "grant_type": "refresh_token",
-        "refresh_token": os.environ["STRAVA_REFRESH_TOKEN"],
+        "refresh_token": creds["STRAVA_REFRESH_TOKEN"],
     }, timeout=30)
-    data = res.json()
+    try:
+        data = res.json()
+    except ValueError:
+        data = {"message": res.text[:200]}
     if "access_token" not in data:
-        sys.exit(f"Strava sign-in failed (HTTP {res.status_code}): {data.get('message', 'unknown error')}")
+        # Strava names the rejected field (e.g. refresh_token / client_secret) without echoing its value
+        problems = "; ".join(f"{e.get('field')} is {e.get('code')}" for e in data.get("errors", [])) or "no details"
+        sys.exit(f"Strava sign-in failed (HTTP {res.status_code}): {data.get('message', 'unknown error')} — {problems}")
 
     # The log is public on a public repo, so never print token values
-    if data.get("refresh_token") and data["refresh_token"] != os.environ["STRAVA_REFRESH_TOKEN"]:
+    if data.get("refresh_token") and data["refresh_token"] != creds["STRAVA_REFRESH_TOKEN"]:
         print("::warning::Strava issued a new refresh token. If future runs fail to sign in, "
               "re-authorize once and update the STRAVA_REFRESH_TOKEN secret.")
     print("--> Signed in to Strava silently via refresh token.")
