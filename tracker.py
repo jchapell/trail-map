@@ -21,7 +21,7 @@ import pandas as pd
 import geopandas as gpd
 import folium
 from folium.plugins import LocateControl
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Point
 from shapely.ops import unary_union
 from branca.element import MacroElement
 from jinja2 import Template
@@ -34,6 +34,7 @@ CSV_PATH = OUT_DIR / "boulder_challenge_progress_report.csv"
 FINGERPRINT_PATH = OUT_DIR / "fingerprint.txt"
 LOCAL_TZ = ZoneInfo("America/Denver")
 ACTIVITY_TYPES = ['Run', 'Hike', 'Trail Run']
+GAP_FILL_M = 100.0   # uncovered stretches shorter than this, between covered parts of a segment, count as covered (GPS dropouts)
 
 
 # =========================================================================
@@ -110,6 +111,23 @@ def compute_fingerprint(all_activities):
 # =========================================================================
 # PART 2: MAP ENGINE (Cell 2)
 # =========================================================================
+
+def covered_length(geom, ribbon):
+    """Length of a trail segment covered by your tracks, with short interior GPS gaps filled in.
+
+    Gaps touching either end of the segment are never filled, so stopping short still counts as incomplete.
+    """
+    if ribbon is None:
+        return 0.0
+    covered = geom.intersection(ribbon)
+    if covered.is_empty:
+        return 0.0
+    uncovered = geom.difference(ribbon)
+    pieces = [g for g in getattr(uncovered, 'geoms', [uncovered]) if not g.is_empty and g.length > 0]
+    start, end = Point(geom.coords[0]), Point(geom.coords[-1])
+    filled = sum(p.length for p in pieces
+                 if p.length < GAP_FILL_M and p.distance(start) > 0.5 and p.distance(end) > 0.5)
+    return min(geom.length, covered.length + filled)
 
 def build_map(all_activities):
     if not all_activities:
@@ -256,15 +274,15 @@ def build_map(all_activities):
         if trail_name and trail_geom_meters and trail_geom_meters.length > 0:
             trail_name_clean = row['trail_key']
 
-            # Calculate intersections
-            intersection_lifetime = trail_geom_meters.intersection(coverage_ribbon)
-            intersection_recent = trail_geom_meters.intersection(recent_coverage_ribbon) if recent_coverage_ribbon is not None else None
-            intersection_historic = trail_geom_meters.intersection(historical_coverage_ribbon) if historical_coverage_ribbon is not None else None
+            # Calculate covered lengths (short interior GPS gaps filled in)
+            cov_m_lifetime = covered_length(trail_geom_meters, coverage_ribbon)
+            cov_m_recent = covered_length(trail_geom_meters, recent_coverage_ribbon)
+            cov_m_historic = covered_length(trail_geom_meters, historical_coverage_ribbon)
 
             tot_miles = trail_geom_meters.length * 0.000621371
-            cov_miles_lifetime = intersection_lifetime.length * 0.000621371
-            cov_miles_recent = intersection_recent.length * 0.000621371 if intersection_recent else 0.0
-            cov_miles_historic = intersection_historic.length * 0.000621371 if intersection_historic else 0.0
+            cov_miles_lifetime = cov_m_lifetime * 0.000621371
+            cov_miles_recent = cov_m_recent * 0.000621371
+            cov_miles_historic = cov_m_historic * 0.000621371
 
             if trail_name_clean not in trail_summary:
                 trail_summary[trail_name_clean] = {
@@ -290,7 +308,7 @@ def build_map(all_activities):
                         trail_summary[trail_name_clean]['latest_recent_date'] = track_date
 
             # Draw map polylines
-            pct_seg = (intersection_lifetime.length / trail_geom_meters.length) * 100
+            pct_seg = (cov_m_lifetime / trail_geom_meters.length) * 100
             color = 'green' if pct_seg >= 90.0 else ('orange' if pct_seg > 5.0 else 'red')
 
             if trail_geom_wgs and trail_geom_wgs.geom_type == 'LineString':
@@ -467,6 +485,8 @@ def build_map(all_activities):
 
                 {weekly_list_html}
             </div>
+
+            <a href="{CSV_PATH.name}" download style="display: block; margin-top: 12px; text-align: center; font-size: 12px; color: #52a3ff; text-decoration: none; padding: 7px; border: 1px solid rgba(82,163,255,0.35); border-radius: 6px;">⬇ Download progress report (CSV)</a>
         </div>
     </div>
     """
