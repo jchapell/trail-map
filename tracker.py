@@ -34,6 +34,18 @@ CSV_PATH = OUT_DIR / "boulder_challenge_progress_report.csv"
 FINGERPRINT_PATH = OUT_DIR / "fingerprint.txt"
 LOCAL_TZ = ZoneInfo("America/Denver")
 ACTIVITY_TYPES = ['Run', 'Hike', 'Trail Run']
+# Permanently closed segments, by OSMP segment ID (shown in each trail's map popup).
+# Retired segments are removed from the map, the trail count and the mileage.
+# Delete a line once the city's trail file no longer includes that segment.
+RETIRED_SEGMENT_IDS = {
+    "415-671-642",  # Mesa Reservoir, 0.33 mi — closed (western BVR project)
+    "415-672-671",  # Mesa Reservoir, 0.45 mi — closed
+    "414-670-672",  # Hidden Valley, 1.00 mi — closed (reroute)
+    "416-670-641",  # Degge, 0.41 mi — closed (reroute)
+    "416-671-670",  # Degge, 0.22 mi — closed
+    "416-646-671",  # Degge, 0.27 mi — closed
+}
+
 GAP_FILL_M = 100.0   # uncovered stretches shorter than this, between covered parts of a segment, count as covered (GPS dropouts)
 
 
@@ -198,6 +210,17 @@ def build_map(all_activities):
         raise FileNotFoundError(f"Could not find {GEOJSON_PATH.name} in the repo.")
     osmp_gdf = gpd.read_file(GEOJSON_PATH)
 
+    # --- REMOVE PERMANENTLY CLOSED SEGMENTS ---
+    seg_col = next((c for c in osmp_gdf.columns if 'SEGMENTID' in c.upper() and 'CLOSURE' not in c.upper()), None)
+    if seg_col:
+        seg_ids = osmp_gdf[seg_col].astype(str).str.strip()
+        retired_mask = seg_ids.isin(RETIRED_SEGMENT_IDS)
+        unmatched = RETIRED_SEGMENT_IDS - set(seg_ids)
+        osmp_gdf = osmp_gdf[~retired_mask].copy()
+        print(f"    Retired {int(retired_mask.sum())} closed segment(s).")
+        if unmatched:
+            print(f"    Note: retired IDs not in the trail file (safe to delete from the list): {', '.join(sorted(unmatched))}")
+
     name_col = None
     for col in osmp_gdf.columns:
         if 'TRAILNAME' in col.upper() or 'TRAIL_NAME' in col.upper():
@@ -314,7 +337,8 @@ def build_map(all_activities):
             if trail_geom_wgs and trail_geom_wgs.geom_type == 'LineString':
                 sim_geom = trail_geom_wgs.simplify(0.0001)
                 coords = [(lat, lon) for lon, lat in sim_geom.coords]
-                popup_text = f"<b>{trail_name_clean}</b><br>Segment Length: {tot_miles:.2f} mi"
+                seg_label = f"<br><span style='color:#888; font-size:11px;'>Segment ID: {row.get(seg_col)}</span>" if seg_col else ""
+                popup_text = f"<b>{trail_name_clean}</b><br>Segment Length: {tot_miles:.2f} mi{seg_label}"
                 folium.PolyLine(coords, color=color, weight=3, opacity=0.8, popup=popup_text).add_to(m)
 
     # --- STEP D: SCALING METRIC STATS ---
