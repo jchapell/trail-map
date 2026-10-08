@@ -11,6 +11,7 @@ import os
 import sys
 import time
 import hashlib
+import html
 import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -28,6 +29,7 @@ from jinja2 import Template
 
 ROOT = Path(__file__).resolve().parent
 GEOJSON_PATH = ROOT / "osmp_trails.geojson"   # replace this file in the repo to update trail data
+TRAILHEADS_PATH = ROOT / "OSMP_Trailheads.geojson"   # optional; trailhead pins are skipped if missing
 OUT_DIR = ROOT / "docs"                        # GitHub Pages publishes this folder
 MAP_PATH = OUT_DIR / "index.html"
 CSV_PATH = OUT_DIR / "boulder_challenge_progress_report.csv"
@@ -118,6 +120,8 @@ def compute_fingerprint(all_activities):
             h.update(f"{act.get('id')}|{act.get('start_date')}|{(act.get('map') or {}).get('summary_polyline', '')}\n".encode())
     h.update(datetime.datetime.now(LOCAL_TZ).date().isoformat().encode())  # 7-day window rolls daily
     h.update(GEOJSON_PATH.read_bytes())
+    if TRAILHEADS_PATH.exists():
+        h.update(TRAILHEADS_PATH.read_bytes())
     h.update(Path(__file__).read_bytes())
     return h.hexdigest()
 
@@ -125,6 +129,60 @@ def compute_fingerprint(all_activities):
 # =========================================================================
 # PART 2: MAP ENGINE (Cell 2)
 # =========================================================================
+
+def add_trailheads(m):
+    """Adds a toggleable 'Trailheads' layer of pins with name, info link and a Google Maps address link."""
+    if not TRAILHEADS_PATH.exists():
+        print("    No trailheads file found — skipping trailhead pins.")
+        return
+    th = gpd.read_file(TRAILHEADS_PATH).to_crs(epsg=4326)
+    layer = folium.FeatureGroup(name="Trailheads", show=True)
+
+    def val(row, col):
+        v = row.get(col)
+        return "" if v is None or pd.isna(v) else str(v).strip()
+
+    count = 0
+    for _, row in th.iterrows():
+        geom = row.geometry
+        if geom is None or geom.is_empty:
+            continue
+        pt = geom if geom.geom_type == 'Point' else geom.representative_point()
+        lat, lon = pt.y, pt.x
+
+        name = html.escape(val(row, 'ACCESSNAME') or "Trailhead")
+        aka = val(row, 'AKA')
+        address = val(row, 'ADDRESS')
+        url = val(row, 'THURL')
+        # Link uses the trailhead's exact coordinates, so it drops the pin in the right parking lot
+        gmaps = f"https://www.google.com/maps/search/?api=1&query={lat:.6f},{lon:.6f}"
+
+        parts = [f"<b style='font-size:13px;'>{name}</b>"]
+        if aka:
+            parts.append(f"<span style='color:#666;'>aka {html.escape(aka)}</span>")
+        parts.append(f"📍 <a href='{gmaps}' target='_blank' rel='noopener'>{html.escape(address) if address else 'Open in Google Maps'}</a>")
+        if url:
+            parts.append(f"ℹ️ <a href='{html.escape(url)}' target='_blank' rel='noopener'>Trailhead info</a>")
+        extras = []
+        if val(row, 'PARKSPACES'):
+            extras.append(f"Parking: {html.escape(val(row, 'PARKSPACES'))}")
+        if val(row, 'FEE'):
+            extras.append(f"Fee: {html.escape(val(row, 'FEE'))}")
+        if val(row, 'RESTROOMS'):
+            extras.append(f"Restrooms: {html.escape(val(row, 'RESTROOMS'))}")
+        if extras:
+            parts.append(f"<span style='color:#666; font-size:11px;'>{' · '.join(extras)}</span>")
+
+        folium.Marker(
+            location=[lat, lon],
+            popup=folium.Popup("<br>".join(parts), max_width=260),
+            tooltip=name,
+            icon=folium.Icon(color='darkblue', icon='car', prefix='fa'),
+        ).add_to(layer)
+        count += 1
+
+    layer.add_to(m)
+    print(f"    Added {count} trailhead pin(s).")
 
 def covered_length(geom, ribbon):
     """Length of a trail segment covered by your tracks, with short interior GPS gaps filled in.
@@ -342,6 +400,9 @@ def build_map(all_activities):
                 seg_label = f"<br><span style='color:#888; font-size:11px;'>Segment ID: {row.get(seg_col)}</span>" if seg_col else ""
                 popup_text = f"<b>{trail_name_clean}</b><br>Segment Length: {tot_miles:.2f} mi{seg_label}"
                 folium.PolyLine(coords, color=color, weight=3, opacity=0.8, popup=popup_text).add_to(m)
+
+    # --- TRAILHEAD PINS ---
+    add_trailheads(m)
 
     # --- STEP D: SCALING METRIC STATS ---
     total_osmp_trails = len(trail_summary)
