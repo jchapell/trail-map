@@ -35,7 +35,7 @@ Cherryvale (2),NO,0.71,0.71,https://bouldercolorado.gov/services/open-space-and-
 Coal Seam,YES (100%),0.71,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Coal Seam Spur,YES (100%),0.06,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Coalton,YES (100%),1.85,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Cobalt,NO,1.07,1.07,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Cobalt,YES (100%),1.07,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Community Ditch,YES (100%),3.86,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Community Ditch Hwy 93 Spur,YES (100%),0.07,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Cottontail (1),NO,0.79,0.79,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
@@ -46,7 +46,7 @@ Cragmoor Connector,YES (100%),0.24,0.0,https://bouldercolorado.gov/services/open
 Crown Rock,YES (100%),0.4,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Crown Rock Picnic Loop,YES (100%),0.1,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Dakota Ridge,YES (100%),1.41,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Degge,NO,0.9,0.9,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Degge,In Progress (53.7%),0.9,0.42,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Devils Thumb Access,YES (100%),0.08,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Doudy Draw,YES (100%),2.16,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Doudy Draw Connector,YES (100%),0.04,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
@@ -54,8 +54,8 @@ Doudy Draw Picnic Area,YES (100%),0.03,0.0,https://bouldercolorado.gov/services/
 Dry Creek,NO,1.06,1.06,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Dunn House Loop,YES (100%),0.04,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 E.M. Greenman,YES (100%),1.62,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Eagle,NO,3.69,3.69,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Eagle Connector,NO,0.28,0.28,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Eagle,In Progress (56.0%),3.69,1.62,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Eagle Connector,YES (100%),0.28,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 East Boulder - Gunbarrel,NO,2.08,2.08,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 East Boulder - Teller Farm,NO,2.3,2.3,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 East Boulder - Teller Farm Spur,NO,0.19,0.19,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
@@ -95,7 +95,7 @@ Gregory Canyon,YES (100%),1.21,0.0,https://bouldercolorado.gov/services/open-spa
 Gregory Canyon Spur,YES (100%),0.03,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Halfway House,YES (100%),0.22,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Hardscrabble Connector,YES (100%),0.1,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Hidden Valley,NO,1.23,1.23,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Hidden Valley,In Progress (16.9%),1.23,1.02,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 High Plains,YES (100%),2.67,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Hogback Ridge,YES (100%),1.81,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Holly Berry,YES (100%),0.3,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
@@ -124,7 +124,7 @@ McClintock Upper,YES (100%),0.45,0.0,https://bouldercolorado.gov/services/open-s
 Meadow,YES (100%),0.5,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Mesa,YES (100%),6.54,0.01,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Mesa Connector,YES (100%),0.18,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Mesa Reservoir,NO,1.01,1.01,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Mesa Reservoir,In Progress (22.6%),1.01,0.78,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Mount Sanitas,YES (100%),1.25,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 NCAR,YES (100%),0.95,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 NCAR - Bear Canyon,YES (100%),1.17,0.02,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
@@ -157,9 +157,9 @@ Reflection Point,In Progress (24.8%),0.04,0.03,https://bouldercolorado.gov/servi
 Royal Arch,YES (100%),0.81,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Saddle Rock (1),YES (100%),0.09,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Saddle Rock (2),YES (100%),0.53,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Sage (1),NO,0.39,0.39,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Sage (1),In Progress (63.3%),0.39,0.14,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Sage (2),NO,1.16,1.16,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Sage Connector,NO,0.41,0.41,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Sage Connector,YES (100%),0.41,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Sanitas Connector,YES (100%),0.03,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Sanitas Spur,YES (100%),0.09,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Sanitas Valley,YES (100%),1.28,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
@@ -170,7 +170,7 @@ Shadow Canyon,YES (100%),1.23,0.0,https://bouldercolorado.gov/services/open-spac
 Shadow Canyon North,YES (100%),0.63,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Shadow Canyon South,YES (100%),0.88,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Shadow Canyon South Spur,YES (100%),0.3,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
-Shale,NO,0.71,0.71,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
+Shale,YES (100%),0.71,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Shanahan - Mesa,YES (100%),0.39,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Shanahan Connector,YES (100%),0.4,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
 Ski Jump,YES (100%),0.22,0.0,https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails
