@@ -350,6 +350,7 @@ def build_map(all_activities):
     # --- STEP C: INTERSECTION & DASHBOARD ANALYSIS ---
     print("--> Step 6: Engineering intersection metrics and building dashboard fields...")
     trail_summary = {}
+    segment_draw_items = []  # drawn after trail totals are known, so completed trails can show fully green
 
     for idx, row in osmp_gdf.iterrows():
         trail_name = row.get(name_col)
@@ -404,7 +405,7 @@ def build_map(all_activities):
                 coords = [(lat, lon) for lon, lat in sim_geom.coords]
                 seg_label = f"<br><span style='color:#888; font-size:11px;'>Segment ID: {row.get(seg_col)}</span>" if seg_col else ""
                 popup_text = f"<b>{trail_name_clean}</b><br>Segment Length: {tot_miles:.2f} mi{seg_label}"
-                folium.PolyLine(coords, color=color, weight=3, opacity=0.8, popup=popup_text).add_to(m)
+                segment_draw_items.append((coords, color, popup_text, trail_name_clean))
 
     # --- TRAILHEAD PINS ---
     add_trailheads(m)
@@ -422,6 +423,7 @@ def build_map(all_activities):
 
     weekly_active_completed_trail_records = []
     report_rows = []
+    completed_trails = set()
 
     for t_name, data in sorted(trail_summary.items()):
         tot_mi = data['total_miles']
@@ -438,6 +440,7 @@ def build_map(all_activities):
         # Track Lifetime Completed
         if pct_life >= 90.0:
             lifetime_completed_count += 1
+            completed_trails.add(t_name)
             status = "YES (100%)"
         elif pct_life > 5.0:
             status = f"In Progress ({pct_life:.1f}%)"
@@ -469,6 +472,11 @@ def build_map(all_activities):
             'Miles Remaining': round(max(0.0, tot_mi - cov_mi_life), 2),
             'Map Resource Link': "https://bouldercolorado.gov/services/open-space-and-mountain-parks-trails"
         })
+
+    # Draw trail segments: every segment of a completed trail shows green; others keep their own color
+    for coords, color, popup_text, t_key in segment_draw_items:
+        seg_color = 'green' if t_key in completed_trails else color
+        folium.PolyLine(coords, color=seg_color, weight=3, opacity=0.8, popup=popup_text).add_to(m)
 
     # Total Completions = New Breakthroughs + Strict End-to-End Repeats
     total_weekly_completions_count = recent_new_completed_count + recent_repeat_completed_count
