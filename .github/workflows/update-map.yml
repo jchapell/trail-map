@@ -21,6 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main              # always start from the latest version, even for queued runs or re-runs
 
       - uses: actions/setup-python@v5
         with:
@@ -47,6 +49,6 @@ jobs:
             echo "Nothing new to publish."
           else
             git commit -m "Update trail map"
-            git pull --rebase
+            git pull --rebase -X theirs   # if another run published meanwhile, keep this newer build
             git push
           fi
