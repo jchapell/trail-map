@@ -48,6 +48,7 @@ RETIRED_SEGMENT_IDS = {
     "416-646-671",  # Degge, 0.27 mi — closed
     "410-641-642",  # Eagle, west end near Degge/Hidden Valley — closed
     "414-642-670",  # Hidden Valley, remaining west piece — closed
+    "298-094-093",  # NIST Service Rd, 0.19 mi — closed
 }
 
 GAP_FILL_M = 100.0   # uncovered stretches shorter than this, between covered parts of a segment, count as covered (GPS dropouts)
