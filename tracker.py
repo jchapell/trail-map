@@ -51,7 +51,8 @@ RETIRED_SEGMENT_IDS = {
     "298-094-093",  # NIST Service Rd, 0.19 mi — closed
 }
 
-GAP_FILL_M = 100.0   # uncovered stretches shorter than this, between covered parts of a segment, count as covered (GPS dropouts)
+GAP_FILL_M = 100.0
+MAP_GREEN_MAX_MISS_M = 20.0   # map only: a mostly-run segment with less than this uncovered also shows green   # uncovered stretches shorter than this, between covered parts of a segment, count as covered (GPS dropouts)
 
 
 # =========================================================================
@@ -393,7 +394,10 @@ def build_map(all_activities):
 
             # Draw map polylines
             pct_seg = (cov_m_lifetime / trail_geom_meters.length) * 100
-            color = 'green' if pct_seg >= 90.0 else ('orange' if pct_seg > 5.0 else 'red')
+            missed_m = trail_geom_meters.length - cov_m_lifetime
+            # Short junction pieces can miss 90% by a few meters; treat a tiny miss as done (colors only, not counts)
+            is_done = pct_seg >= 90.0 or (pct_seg >= 50.0 and missed_m < MAP_GREEN_MAX_MISS_M)
+            color = 'green' if is_done else ('orange' if pct_seg > 5.0 else 'red')
 
             if trail_geom_wgs and trail_geom_wgs.geom_type == 'LineString':
                 sim_geom = trail_geom_wgs.simplify(0.0001)
