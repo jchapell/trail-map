@@ -35,7 +35,7 @@ MAP_PATH = OUT_DIR / "index.html"
 CSV_PATH = OUT_DIR / "boulder_challenge_progress_report.csv"
 FINGERPRINT_PATH = OUT_DIR / "fingerprint.txt"
 LOCAL_TZ = ZoneInfo("America/Denver")
-ACTIVITY_TYPES = ['Run', 'Hike', 'Trail Run']
+ACTIVITY_TYPES = ['Run', 'Hike', 'Trail Run', 'Walk']
 # Permanently closed segments, by OSMP segment ID (shown in each trail's map popup).
 # Retired segments are removed from the map, the trail count and the mileage.
 # Delete a line once the city's trail file no longer includes that segment.
