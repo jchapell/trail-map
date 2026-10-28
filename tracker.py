@@ -49,10 +49,15 @@ RETIRED_SEGMENT_IDS = {
     "410-641-642",  # Eagle, west end near Degge/Hidden Valley — closed
     "414-642-670",  # Hidden Valley, remaining west piece — closed
     "298-094-093",  # NIST Service Rd, 0.19 mi — closed
+    "514-515-516",  # Dry Creek, 0.14 mi — closed
+    "514-516-517",  # Dry Creek, 0.08 mi — closed
+    "514-517-516",  # Dry Creek, 0.05 mi — closed
+    "514-517-518",  # Dry Creek, 0.21 mi — closed
+    "514-518-518",  # Dry Creek, 0.58 mi — closed
 }
 
-GAP_FILL_M = 100.0
-MAP_GREEN_MAX_MISS_M = 20.0   # map only: a mostly-run segment with less than this uncovered also shows green   # uncovered stretches shorter than this, between covered parts of a segment, count as covered (GPS dropouts)
+GAP_FILL_M = 100.0             # uncovered stretches shorter than this, between covered parts of a segment, count as covered (GPS dropouts)
+MAP_GREEN_MAX_MISS_M = 20.0    # map only: a mostly-run segment with less than this uncovered also shows green
 
 
 # =========================================================================
